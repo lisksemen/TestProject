@@ -51,6 +51,9 @@ public class TestProjectApplicationTests {
         });
     }
 
+    /**
+     * Tests if all users are added
+     */
     @Test
     public void testGet() throws Exception {
         AtomicInteger id = new AtomicInteger(1);
@@ -69,6 +72,9 @@ public class TestProjectApplicationTests {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Tests adding user and checking if user is added correctly
+     */
     @Test
     public void testPost() throws Exception {
 
