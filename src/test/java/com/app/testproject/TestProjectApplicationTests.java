@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,7 +44,7 @@ public class TestProjectApplicationTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(userRequest))
                                 .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(MockMvcResultMatchers.status().isCreated());
+                        .andExpect(status().isCreated());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -51,11 +52,10 @@ public class TestProjectApplicationTests {
     }
 
     @Test
-    public void testGet() {
+    public void testGet() throws Exception {
         AtomicInteger id = new AtomicInteger(1);
         userRequests.forEach(userRequest -> {
             try {
-                System.out.println(id.get());
                 mvc.perform(get("/api/user/" + id.getAndIncrement() + "/")
                                 .contentType(MediaType.APPLICATION_JSON))
 
@@ -64,6 +64,9 @@ public class TestProjectApplicationTests {
                 throw new RuntimeException(e);
             }
         });
+        mvc.perform(get("/api/user/9999999/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -75,7 +78,7 @@ public class TestProjectApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Name"));
     }
 
